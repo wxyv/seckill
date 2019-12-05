@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/token")
 public class token {
@@ -27,7 +29,7 @@ public class token {
         //创建秒杀的 token
         String token = TokenTools.createToken();
         //将token、当前状态、渠道、商品 等相关信息存放到redis 中，并设置过期时间
-        reactiveRedisTemplate.opsForValue().set(token,seckill, 3000L);
+        reactiveRedisTemplate.opsForValue().set(token,seckill, 30000L);
         return Mono.just(token);
     }
 
@@ -39,7 +41,8 @@ public class token {
      */
     @GetMapping("/{token}/check")
     public Mono check (@PathVariable("token") String token){
-        return null;
+        Mono<Seckill> seckillMono =  reactiveRedisTemplate.opsForValue().get(token);
+        return Mono.just(Optional.of(seckillMono).isPresent());
     }
 
     /**
@@ -49,7 +52,8 @@ public class token {
      */
     @GetMapping("/{token}")
     public Mono query (@PathVariable("token") String token){
-        return null;
+        Mono<Seckill> seckillMono =  reactiveRedisTemplate.opsForValue().get(token);
+        return Mono.just(seckillMono);
     }
 
     /**

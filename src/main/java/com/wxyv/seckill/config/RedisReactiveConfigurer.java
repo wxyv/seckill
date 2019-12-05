@@ -17,7 +17,7 @@ public class RedisReactiveConfigurer  extends CachingConfigurerSupport{
     }
 
     @Bean
-    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         return container;
